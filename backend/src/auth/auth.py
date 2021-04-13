@@ -76,9 +76,19 @@ def get_token_auth_header():
     it should raise an AuthError if the requested permission string is not in the payload permissions array
     return true otherwise
 '''
-# def check_permissions(permission, payload):
-#     raise Exception('Not Implemented')
-# MOVED INTO 'requires_auth' decorator!
+def check_permissions(permission, payload):
+    if 'permissions' not in payload:
+        raise AuthError({
+            'code': 'invalid_claims',
+            'description': 'Permissions not included in JWT.'
+        }, 400)
+
+    if permission not in payload['permissions']:
+        raise AuthError({
+            'code': 'unauthorized',
+            'description': 'Permission not found.'
+        }, 403)
+    return True
 
 '''
 @TODO implement verify_decode_jwt(token) method
@@ -168,19 +178,7 @@ def requires_auth(permission=''):
             except:
                 abort(401)
 
-            def check_permissions(permission, payload):
-                if 'permissions' not in payload:
-                    raise AuthError({
-                        'code': 'invalid_claims',
-                        'description': 'Permissions not included in JWT.'
-                    }, 400)
-
-                if permission not in payload['permissions']:
-                    raise AuthError({
-                        'code': 'unauthorized',
-                        'description': 'Permission not found.'
-                    }, 403)
-                return True
+            check_permissions(permission, payload)
 
             return f(payload, *args, **kwargs)
 
