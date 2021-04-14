@@ -152,11 +152,11 @@ def verify_decode_jwt(token):
                 'description': 'Unable to parse authentication token.'
             }, 400)
     raise AuthError({
-                'code': 'invalid_header',
+        'code': 'invalid_header',
                 'description': 'Unable to find the appropriate key.'
-            }, 400)
+    }, 400)
 
-    # raise Exception('Not Implemented')
+  # raise Exception('Not Implemented')
 
 '''
 @TODO implement @requires_auth(permission) decorator method
@@ -176,7 +176,10 @@ def requires_auth(permission=''):
             try:
                 payload = verify_decode_jwt(token)
             except:
-                abort(401)
+                raise AuthError({
+                    'code': 'invalid_token',
+                    'description': 'Access denied due to invalid token'
+                }, 401)
 
             check_permissions(permission, payload)
 
