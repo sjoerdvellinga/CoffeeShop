@@ -118,3 +118,11 @@ def unprocessable(error):
 @TODO implement error handler for AuthError
     error handler should conform to general task above 
 '''
+
+@app.errorhandler(AuthError)
+def handle_auth_error(ex):
+    return jsonify({
+        "success": False,
+        "error": ex.status_code,
+        'message': ex.error
+    }), 401
