@@ -30,6 +30,7 @@ CORS(app)
 '''
 
 
+# Get drinks menu, public available (no authorization)
 @app.route('/drinks')
 def get_drinks():
     try:
@@ -53,6 +54,7 @@ def get_drinks():
 '''
 
 
+# get ingredients list for drinks (authenticated users only)
 @app.route("/drinks-detail")
 @requires_auth('get:drinks-detail')
 def get_drink_detail(jwt):
@@ -78,6 +80,7 @@ def get_drink_detail(jwt):
 '''
 
 
+# add new drinks to the menu, with recipe (authenticated users only)
 @app.route("/drinks", methods=['POST'])
 @requires_auth('post:drinks')
 def add_drink(jwt):
@@ -116,6 +119,7 @@ def add_drink(jwt):
 '''
 
 
+# make chenges to drinks recipes (authenticated users only)
 @app.route("/drinks/<id>", methods=['PATCH'])
 @requires_auth('patch:drinks')
 def update_drink(jwt, id):
@@ -159,6 +163,7 @@ def update_drink(jwt, id):
 '''
 
 
+# remove drinks from the menu (authenticated users only)
 @app.route("/drinks/<id>", methods=['DELETE'])
 @requires_auth('delete:drinks')
 def delete_drink(jwt, id):
@@ -184,6 +189,7 @@ Example error handling for unprocessable entity
 '''
 
 
+# response message for 422 error
 @app.errorhandler(422)
 def unprocessable(error):
     return jsonify({
@@ -209,6 +215,7 @@ def unprocessable(error):
 '''
 
 
+# response message for 404 error
 @app.errorhandler(404)
 def not_found(error):
     return jsonify({
@@ -223,6 +230,7 @@ def not_found(error):
 '''
 
 
+# decorater to process authentication errors from app.py
 @app.errorhandler(AuthError)
 def handle_auth_error(ex):
     return jsonify({

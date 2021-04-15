@@ -4,7 +4,7 @@ from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 
-
+# Use auth0 for user authorization
 AUTH0_DOMAIN = 'rellow.eu.auth0.com'
 ALGORITHMS = ['RS256']
 API_AUDIENCE = 'CoffeeShop'
@@ -44,6 +44,7 @@ def get_token_auth_header():
             'description': 'Authorization header is expected.'
         }, 401)
 
+    # check if bearer token has the required prefix
     parts = auth.split()
     if parts[0].lower() != 'bearer':
         raise AuthError({
@@ -57,12 +58,14 @@ def get_token_auth_header():
             'description': 'Token not found.'
         }, 401)
 
+    #check if the bearer token has two parts (prefix + token)
     elif len(parts) > 2:
         raise AuthError({
             'code': 'invalid_header',
             'description': 'Authorization header must be bearer token.'
         }, 401)
 
+    # capture the token, without prefix
     token = parts[1]
     return token
 
@@ -82,6 +85,7 @@ def get_token_auth_header():
 '''
 
 
+# authorization check for endpoints
 def check_permissions(permission, payload):
     if 'permissions' not in payload:
         raise AuthError({
@@ -180,7 +184,7 @@ def verify_decode_jwt(token):
     decorated method
 '''
 
-
+# function to add authorization check to endpoints
 def requires_auth(permission=''):
     def requires_auth_decorator(f):
         @wraps(f)
