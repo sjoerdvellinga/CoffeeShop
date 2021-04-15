@@ -1,35 +1,140 @@
-# Coffee Shop Full Stack
+# API Reference
 
-## Full Stack Nano - IAM Final Project
+## Getting Started
+Application runs only on localhost, port 5000 (backend)  
+Base URL: *http://127.0.0.1:5000/*
 
-Udacity has decided to open a new digitally enabled cafe for students to order drinks, socialize, and study hard. But they need help setting up their menu experience.
+## Error Handling
+Errors are returned as JSON objects:
 
-You have been called on to demonstrate your newly learned skills to create a full stack drink menu application. The application must:
+**Example**:  
+$ curl http://127.0.0.1:5000/NotValid  
+  
+{
+  "error": 404,  
+  "message": "resource not found",  
+  "success": false  
+}  
+  
+Other returned error codes:
+404: Resource not found  
+422: Unprocessable 
 
-1) Display graphics representing the ratios of ingredients in each drink.
-2) Allow public users to view drink names and graphics.
-3) Allow the shop baristas to see the recipe information.
-4) Allow the shop managers to create new drinks and edit existing drinks.
+## Project dependencies
+Setup a virtual envirionment with Python 3.9.
 
-## Tasks
+And install dependent packages from requirements.txt with command:
 
-There are `@TODO` comments throughout the project. We recommend tackling the sections in order. Start by reading the READMEs in:
+PIP3 install -r requirements.txt 
 
-1. [`./backend/`](./backend/README.md)
-2. [`./frontend/`](./frontend/README.md)
+**Note**: Make sure that you are running version 1.0.1 of 'Werkzeug' or later. Earlier versions are not compatible with Python 3.9x.
 
-## About the Stack
+### Project Server
+From within the backend directory first ensure you are working using your created virtual environment.
 
-We started the full stack application for you. It is desiged with some key functional areas:
+To run the server, execute:
 
-### Backend
+export FLASK_APP=flaskr
+export FLASK_ENV=development
+flask run
 
-The `./backend` directory contains a partially completed Flask server with a pre-written SQLAlchemy module to simplify your data needs. You will need to complete the required endpoints, configure, and integrate Auth0 for authentication.
+## Endpoints
 
-[View the README.md within ./backend for more details.](./backend/README.md)
+### /drinks    (method: GET)
+**General**:
+Returns all the drinks on the menu
 
-### Frontend
+**Example**:
+$ curl http://127.0.0.1:5000/drinks 
+  
+{  
 
-The `./frontend` directory contains a complete Ionic frontend to consume the data from the Flask server. You will only need to update the environment variables found within (./frontend/src/environment/environment.ts) to reflect the Auth0 configuration details set up for the backend app. 
+  "drinks": [
+    {
+      "id": 1,
+      "recipe": [
+        {
+          "color": "white",
+          "parts": "1"
+        },
+        {
+          "color": "green",
+          "parts": "1"
+        },
+        {
+          "color": "red",
+          "parts": "1"
+        }
+      ],
+      "title": "Vampire"
+    }
+  ],
+  "success": true
+}
 
-[View the README.md within ./frontend for more details.](./frontend/README.md)
+### /drinks-details   (method: GET)
+**General**:
+*Returns the recipes for all drinks on the menu*
+
+**Example**:
+$ curl http://127.0.0.1:5000/drinks-details
+{
+  "drinks": [
+    {
+      "id": 1,
+      "recipe": [
+        {
+          "color": "white",
+          "name": "Tequila",
+          "parts": "1"
+        },
+        {
+          "color": "green",
+          "name": "Lime juice",
+          "parts": "1"
+        },
+        {
+          "color": "red",
+          "name": "Sangrita",
+          "parts": "1"
+        }
+      ],
+      "title": "Vampire"
+    }
+  ],
+  "success": true
+}
+
+### /drinks   (method: POST)
+**General**:
+*Returns the recipes for all drinks on the menu*
+
+**Example**:
+curl http://127.0.0.1/5000/drinks -X POST -H "Content-type: application/json" -d '{
+	"title":"Vampire",
+	"recipe": [{"color": "white", "name":"Tequila", "parts":"1"},
+				{"color": "green", "name":"Lime juice", "parts":"1"},
+				{"color": "red", "name":"Sangrita", "parts":"1"}
+	]
+}'
+
+### /drinks/<drink_id>   (method: DELETE)
+**General**:
+*Remove (delete) a menu item*
+
+**Example**:
+http://127.0.0.1/5000/drinks/1 -X DELETE
+
+Get /drinks-details
+General: This endpoint will return a detailed information from drinks.
+
+Sample: curl http://127.0.0.1:5000/categories
+
+### /drinks/<drink_id>   (method: PATCH)
+**General**:
+*Update name or recipe of selected drink*
+
+**Example**:
+curl http://127.0.0.1/5000/drinks -X PATCH -H "Content-type: application/json" -d '{
+	"title":"Margarita"
+}'
